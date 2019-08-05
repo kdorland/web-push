@@ -1,0 +1,1 @@
+This is a small example of using Web Push and Push Notifications. The implementation is based on a small React app and an Express.js backend. 
