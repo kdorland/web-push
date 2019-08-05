@@ -16,6 +16,7 @@ class App extends Component {
             this.setState({messages : [...this.state.messages, msg.data]});
         }
     }
+
     unsubscribePush() {
         navigator.serviceWorker.ready.then(function(reg) {
             reg.pushManager.getSubscription().then(function(subscription) {
@@ -33,9 +34,7 @@ class App extends Component {
     }
 
     render() {
-
         const msgList = this.state.messages.map((msg, index) => <p key={index}>{msg}</p>);
-
         return (
             <div className="container">
                 <h1>Push Notifications</h1>

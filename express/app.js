@@ -14,12 +14,12 @@ app.use(bodyParser.json()); // Parse JSON from the request body
 app.use(morgan('combined')); // Log all requests to the console
 app.use(express.static(path.join(__dirname, '../build'))); // Serve React app
 
-// TODO: Don't put these directly in source! Keep them somewhere else.
+// Supply these keys using environment variables.
 const publicVapidKey = process.env.PUBLIC_VAPID_KEY;
 const privateVapidKey = process.env.PRIVATE_VAPID_KEY;
 
 webpush.setVapidDetails('mailto:krdo@eaaa.dk', publicVapidKey, privateVapidKey);
-const subscriptions = [];
+const subscriptions = []; // TODO: Move this to a database
 
 /**** Routes ****/
 app.post('/api/subscribe', (req, res) => {
@@ -71,8 +71,7 @@ app.post('/api/send_push_message', (req, res) => {
             }
         });
     });
-
-    res.json({message: "Sending push messages initiated"});
+    res.json({msg: "Sending push messages initiated"});
 });
 
 /**** Reroute all unknown requests to react index.html ****/
