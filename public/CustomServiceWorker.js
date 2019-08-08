@@ -6,8 +6,10 @@ self.addEventListener('push', function (event) {
     const data = event.data.json();
     console.log("Getting push data", data);
 
-    const bc = new BroadcastChannel('main_channel');
-    bc.postMessage(data.msg);
+    if ('BroadcastChannel' in self) {
+        const bc = new BroadcastChannel('main_channel');
+        bc.postMessage(data.msg);
+    }
 
     event.waitUntil(
         self.registration.showNotification(data.title, {
@@ -17,3 +19,8 @@ self.addEventListener('push', function (event) {
     );
 });
 
+// serviceworker.js
+self.addEventListener('notificationclick', function(event) {
+    event.notification.close();
+    event.waitUntil(clients.openWindow('http://www.google.com'));
+});

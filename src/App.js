@@ -10,11 +10,16 @@ class App extends Component {
             messages: []
         };
 
-        const bc = new BroadcastChannel('main_channel');
-        bc.onmessage = msg => {
-            console.log(msg);
-            this.setState({messages : [...this.state.messages, msg.data]});
+        try {
+            const bc = new BroadcastChannel('main_channel');
+            bc.onmessage = msg => {
+                console.log(msg);
+                this.setState({messages: [...this.state.messages, msg.data]});
+            }
+        } catch(err) {
+            console.log("BroadcastChannel not available", err);
         }
+
     }
 
     unsubscribePush() {
