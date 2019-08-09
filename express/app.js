@@ -22,6 +22,9 @@ webpush.setVapidDetails('mailto:krdo@eaaa.dk', publicVapidKey, privateVapidKey);
 const subscriptions = []; // TODO: Move this to a database
 
 /**** Routes ****/
+
+// The purpose of this endpoint is to store the subscription object that
+// was created in the React app.
 app.post('/api/subscribe', (req, res) => {
     const subscription = req.body;
     const sub = subscriptions.find(elm => elm.endpoint === subscription.endpoint);
@@ -37,6 +40,7 @@ app.post('/api/subscribe', (req, res) => {
     }
 });
 
+// And here we are removing an subscription if it exists.
 app.post('/api/unsubscribe', (req, res) => {
     const subscription = req.body;
     const sub = subscriptions.find(elm => elm.endpoint === subscription.endpoint);
@@ -52,15 +56,18 @@ app.post('/api/unsubscribe', (req, res) => {
     }
 });
 
+// This endpoint broadcasts a message to all subscriptions stored on this server.
 app.post('/api/send_push_message', (req, res) => {
     let msg = req.body.msg;
     let title = req.body.title;
 
     subscriptions.forEach((sub) => {
+        // The payload can be anything you want that fits in JSON
         const payload = JSON.stringify({
             msg: msg,
             title: title
         });
+        // This method will send the payload to the messaging server using the subscription object.
         webpush.sendNotification(sub, payload).catch(error => {
             if (error.statusCode === 410) {
                 console.log("The subscription is no longer active");

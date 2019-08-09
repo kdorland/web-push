@@ -12,25 +12,31 @@ export function register() {
     }
 }
 
+// This is where we do the following:
+// 1. Create a subscription object by communicating with the messaging server.
+//    If a subscription was already created earlier, we will get the same one back.
+// 2. We send the subscription to our own server using a HTTP POST request.
 function subscribeToPush() {
     const API_URL = process.env.REACT_APP_API_URL;
     navigator.serviceWorker.ready.then(
         function (serviceWorkerRegistration) {
             // Register to push events here
+            // The server key has to be encoded using this function to work with the Push API
             const applicationServerKey = urlBase64ToUint8Array(vapidPublicKey);
             const options = {
                 userVisibleOnly: true,
                 applicationServerKey: applicationServerKey
             };
+            // This method will create the subscription (or retrive an existing one)
             serviceWorkerRegistration.pushManager.subscribe(options).then(
-                function (pushSubscription) {
+                function (pushSubscription) { // And this callback will get the subscription
                     console.log(pushSubscription);
-                    fetch(`${API_URL}/subscribe`, {
+                    fetch(`${API_URL}/subscribe`, { // And now we can send it to our server.
                         method: 'post',
                         headers: {
                             'Content-type': 'application/json'
                         },
-                        body: JSON.stringify(pushSubscription),
+                        body: JSON.stringify(pushSubscription), // Our subscription is sent as JSON in the body
                     }).catch(error => console.error(error));
                 }, function (error) {
                     console.log(error);

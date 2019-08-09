@@ -1,5 +1,9 @@
 import React, {Component} from 'react';
 
+/**
+ * The sole purpose of this React app is show Push messages received and make it possible to unsubscribe from them.
+ * Everything else happens in the service worker implementation.
+ */
 class App extends Component {
 
     constructor(props) {
@@ -10,6 +14,8 @@ class App extends Component {
             messages: []
         };
 
+        // The BroadcastChannel API is used to receive messages from the service worker, and is not essential
+        // for the actual push and notification functionality.
         try {
             const bc = new BroadcastChannel('main_channel');
             bc.onmessage = msg => {
@@ -19,7 +25,6 @@ class App extends Component {
         } catch(err) {
             console.log("BroadcastChannel not available", err);
         }
-
     }
 
     unsubscribePush() {
